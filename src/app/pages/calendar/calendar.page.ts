@@ -1,32 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonDatetime,
-  IonCol,
-  IonGrid,
-  IonRow,
-  IonButton,
-  IonListHeader,
-  IonLabel,
-  IonToast,
-  IonModal,
-  IonInput,
-  IonCheckbox,
-  IonTextarea,
-  IonItem,
-  IonButtons,
-  IonIcon,
-} from '@ionic/angular/standalone';
+
 import { addIcons } from 'ionicons';
 import { closeCircleOutline, saveOutline, trashOutline } from 'ionicons/icons';
-import { HeaderComponent } from '../components/header/header.component';
-// Importa el servicio creado
-import { CalendarService } from '../services/calendar.service';
+import { HeaderComponent } from 'src/app/components/header/header.component';
+import { CalendarService } from 'src/app/services/calendar.service';
+import { SharedIonicModule } from 'src/app/shared/shared-ionic.module';
+
 
 interface Appointment {
   id: string;       // Identificador único
@@ -44,31 +25,13 @@ interface Appointment {
   styleUrls: ['./calendar.page.scss'],
   standalone: true,
   imports: [
-    HeaderComponent,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
     CommonModule,
     FormsModule,
-    IonDatetime,
-    IonCol,
-    IonGrid,
-    IonRow,
-    IonButton,
-    IonListHeader,
-    IonLabel,
-    IonToast,
-    IonModal,
-    IonInput,
-    IonCheckbox,
-    IonTextarea,
-    IonItem,
-    IonButtons,
-    IonIcon,
-  ],
+    SharedIonicModule,
+    HeaderComponent,
+  ]
 })
-export class CalendarPage implements OnInit {
+export class CalendarPage {
   selectedDate: string = new Date().toISOString();
   availableTimes: string[] = [];
   appointments: Appointment[] = [];
@@ -88,8 +51,7 @@ export class CalendarPage implements OnInit {
     addIcons({ closeCircleOutline, saveOutline, trashOutline }); // Añadir íconos
   }
 
-  ngOnInit(): void {
-    // Al iniciar la página, se cargan los horarios para la fecha seleccionada
+  ionViewWillEnter(): void {
     this.loadTimeSlotsForDate(this.selectedDate);
     this.loadAppointments();
   }
