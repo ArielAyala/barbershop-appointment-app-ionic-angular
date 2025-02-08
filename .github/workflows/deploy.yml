@@ -24,16 +24,7 @@ jobs:
       - name: Build project
         run: npm run deploy
 
-      - name: List directory structure
-        run: |
-          echo "Listing root directory:"
-          ls -al
-          echo "Listing 'dist' directory:"
-          ls -al dist
-          echo "Listing 'dist/barber-shop' directory:"
-          ls -al dist/barber-shop
-
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist/barber-shop
+          folder: www
