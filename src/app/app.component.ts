@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { IonApp, IonRouterOutlet, IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonMenuToggle, IonItem } from '@ionic/angular/standalone';
 
 @Component({
@@ -15,6 +16,7 @@ import { IonApp, IonRouterOutlet, IonMenu, IonHeader, IonToolbar, IonTitle, IonC
     IonList,
     IonMenuToggle,
     IonItem,
+    RouterModule,
   ],
 })
 export class AppComponent {
