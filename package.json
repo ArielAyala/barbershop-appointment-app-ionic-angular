@@ -5,8 +5,9 @@
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port 4202",
     "build": "ng build",
+    "deploy": "ng build --configuration production --base-href /barbershop-appointment-app-ionic-angular/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
