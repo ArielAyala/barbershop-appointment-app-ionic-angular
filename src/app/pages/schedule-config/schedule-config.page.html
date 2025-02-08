@@ -1,0 +1,43 @@
+<app-header title="Configuración de horarios"></app-header>
+<ion-content class="ion-padding">
+  <!-- Selector de fecha -->
+  <ion-datetime
+    displayFormat="DD MMM YYYY"
+    [(ngModel)]="selectedDate"
+    (ionChange)="onDateSelected($event)"
+  ></ion-datetime>
+
+  <!-- Lista de horarios actuales -->
+  <ion-list>
+    <ion-item *ngFor="let time of availableTimes">
+      <ion-label>{{ time }}</ion-label>
+      <ion-button fill="clear" color="danger" (click)="removeTimeSlot(time)">
+        <ion-icon slot="icon-only" [icon]="removeOutline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <!-- Sección para agregar un nuevo horario -->
+  <ion-item>
+    <ion-input placeholder="Nuevo horario (ej. 10:30)" [(ngModel)]="newTime"></ion-input>
+    <ion-button fill="outline" (click)="addTimeSlot()">
+      <ion-icon slot="start" [icon]="addOutline"></ion-icon>
+      Agregar
+    </ion-button>
+  </ion-item>
+
+  <!-- Botón para guardar la configuración -->
+  <ion-button expand="block" (click)="saveScheduleConfig()">
+    <ion-icon slot="start" [icon]="saveOutline"></ion-icon>
+    Guardar Configuración
+  </ion-button>
+
+  <!-- Toast para mostrar mensajes -->
+  <ion-toast
+    [isOpen]="showToast"
+    [message]="toastMessage"
+    duration="3000"
+    position="bottom"
+    (didDismiss)="showToast = false"
+  ></ion-toast>
+</ion-content>
