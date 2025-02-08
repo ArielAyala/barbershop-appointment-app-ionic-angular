@@ -12,6 +12,10 @@ export const routes: Routes = [
   },
   {
     path: 'calendar',
-    loadComponent: () => import('./calendar/calendar.page').then( m => m.CalendarPage)
+    loadComponent: () => import('./pages/calendar/calendar.page').then( m => m.CalendarPage)
+  },
+  {
+    path: 'schedule-config',
+    loadComponent: () => import('./pages/schedule-config/schedule-config.page').then( m => m.ScheduleConfigPage)
   },
 ];
