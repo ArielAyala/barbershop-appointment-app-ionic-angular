@@ -1,9 +1,19 @@
 import { Injectable } from '@angular/core';
 
+export interface Appointment {
+  id: string;       // Identificador único
+  date: string;     // Fecha en formato ISO
+  time: string;     // Horario en formato 'HH:mm'
+  clientName: string; // Nombre del cliente
+  paid: boolean;      // Si ya pagó
+  amount: number;     // Monto
+  notes: string;      // Observaciones
+}
 @Injectable({
   providedIn: 'root'
 })
 export class CalendarService {
+  // Plantilla por defecto de horarios
   private defaultTimeSlots: string[] = [
     '08:00', '08:40', '09:20', '10:00', '10:40',
     '12:20', '13:00', '13:40', '14:20', '15:00',
@@ -11,8 +21,15 @@ export class CalendarService {
     '19:00', '19:40', '20:20'
   ];
 
-  // Clave única para agrupar todos los horarios por fecha
-  private storageKey = 'timeSlotsByDate';
+  // Clave para agrupar los horarios por fecha
+  private timeSlotsStorageKey = 'timeSlotsByDate';
+
+  // Clave para almacenar las citas
+  private appointmentsStorageKey = 'appointments';
+
+  /* ==========================
+     Lógica de Horarios (Time Slots)
+  ========================== */
 
   /**
    * Formatea la fecha a un formato amigable: YYYY-MM-DD
@@ -33,15 +50,13 @@ export class CalendarService {
    */
   getTimeSlotsForDate(date: string): string[] {
     const formattedDate = this.formatDate(date);
-    const storedObjectStr = localStorage.getItem(this.storageKey);
-    // Se obtiene el objeto que agrupa los horarios por fecha; si no existe, se inicializa en {}
+    const storedObjectStr = localStorage.getItem(this.timeSlotsStorageKey);
     let timeslotsByDate = storedObjectStr ? JSON.parse(storedObjectStr) : {};
 
     if (timeslotsByDate[formattedDate]) {
-      // Ya existe una configuración para esa fecha.
       return timeslotsByDate[formattedDate];
     } else {
-      // Comparar la fecha solicitada con la fecha de hoy (ignorando la hora)
+      // Comparar la fecha solicitada con la fecha de hoy (sin tener en cuenta la hora)
       const selected = new Date(date);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -49,10 +64,10 @@ export class CalendarService {
       if (selected.getTime() >= today.getTime()) {
         // Para hoy o fechas futuras, se inicializa con la plantilla por defecto y se guarda.
         timeslotsByDate[formattedDate] = this.defaultTimeSlots;
-        localStorage.setItem(this.storageKey, JSON.stringify(timeslotsByDate));
+        localStorage.setItem(this.timeSlotsStorageKey, JSON.stringify(timeslotsByDate));
         return this.defaultTimeSlots;
       } else {
-        // Para fechas pasadas, se retorna un arreglo vacío (puedes ajustar este comportamiento si lo deseas).
+        // Para fechas pasadas, se retorna un arreglo vacío.
         return [];
       }
     }
@@ -63,9 +78,52 @@ export class CalendarService {
    */
   setTimeSlotsForDate(date: string, timeSlots: string[]): void {
     const formattedDate = this.formatDate(date);
-    const storedObjectStr = localStorage.getItem(this.storageKey);
+    const storedObjectStr = localStorage.getItem(this.timeSlotsStorageKey);
     let timeslotsByDate = storedObjectStr ? JSON.parse(storedObjectStr) : {};
     timeslotsByDate[formattedDate] = timeSlots;
-    localStorage.setItem(this.storageKey, JSON.stringify(timeslotsByDate));
+    localStorage.setItem(this.timeSlotsStorageKey, JSON.stringify(timeslotsByDate));
+  }
+
+  /* ==========================
+     Lógica de Citas (Appointments)
+  ========================== */
+
+  /**
+   * Retorna todas las citas almacenadas.
+   */
+  getAppointments(): Appointment[] {
+    const savedAppointments = localStorage.getItem(this.appointmentsStorageKey);
+    return savedAppointments ? JSON.parse(savedAppointments) : [];
+  }
+
+  /**
+   * Guarda o actualiza una cita.
+   * Si la cita ya existe (basada en el ID), se actualiza; de lo contrario, se agrega.
+   */
+  saveAppointment(appointment: Appointment): void {
+    const appointments = this.getAppointments();
+    const index = appointments.findIndex(a => a.id === appointment.id);
+    if (index !== -1) {
+      appointments[index] = appointment;
+    } else {
+      appointments.push(appointment);
+    }
+    localStorage.setItem(this.appointmentsStorageKey, JSON.stringify(appointments));
+  }
+
+  /**
+   * Elimina una cita dado su ID.
+   */
+  deleteAppointment(appointmentId: string): void {
+    let appointments = this.getAppointments();
+    appointments = appointments.filter(a => a.id !== appointmentId);
+    localStorage.setItem(this.appointmentsStorageKey, JSON.stringify(appointments));
+  }
+
+  /**
+   * Genera un ID único para cada cita.
+   */
+  generateUniqueId(): string {
+    return Date.now().toString(36) + Math.random().toString(36).substring(2);
   }
 }

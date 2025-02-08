@@ -1,23 +1,12 @@
-import { Component, } from '@angular/core';
+// src/app/pages/calendar/calendar.page.ts
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 import { addIcons } from 'ionicons';
 import { closeCircleOutline, saveOutline, trashOutline } from 'ionicons/icons';
 import { HeaderComponent } from 'src/app/components/header/header.component';
-import { CalendarService } from 'src/app/services/calendar.service';
+import { CalendarService, Appointment } from 'src/app/services/calendar.service';
 import { SharedIonicModule } from 'src/app/shared/shared-ionic.module';
-
-
-interface Appointment {
-  id: string;       // Identificador único
-  date: string;     // Fecha en formato ISO
-  time: string;     // Horario en formato 'HH:mm'
-  clientName: string; // Nombre del cliente
-  paid: boolean;      // Si ya pagó
-  amount: number;     // Monto
-  notes: string;      // Observaciones
-}
 
 @Component({
   selector: 'app-calendar',
@@ -41,7 +30,7 @@ export class CalendarPage {
   selectedTime: string = '';
   currentAppointment: Appointment | null = null; // Cita actual (para editar)
 
-  // Formulario
+  // Datos del formulario
   clientName: string = '';
   paid: boolean = false;
   amount: number = 0;
@@ -63,16 +52,20 @@ export class CalendarPage {
     this.availableTimes = this.calendarService.getTimeSlotsForDate(date);
   }
 
-  // Evento al cambiar la fecha en el ion-datetime
+  /**
+   * Evento al cambiar la fecha en el ion-datetime.
+   */
   onDateSelected(event: any): void {
     this.selectedDate = event.detail.value;
     this.loadTimeSlotsForDate(this.selectedDate);
   }
 
-  // Guardar una cita en el localStorage
+  /**
+   * Guarda o actualiza una cita delegando la lógica en el servicio.
+   */
   saveAppointment(): void {
     const appointment: Appointment = {
-      id: this.currentAppointment?.id || this.generateUniqueId(),
+      id: this.currentAppointment?.id || this.calendarService.generateUniqueId(),
       date: this.selectedDate,
       time: this.selectedTime,
       clientName: this.clientName,
@@ -81,55 +74,49 @@ export class CalendarPage {
       notes: this.notes
     };
 
-    // Si la cita ya existe se actualiza; si no, se agrega
-    const index = this.appointments.findIndex(a => a.id === appointment.id);
-    if (index !== -1) {
-      this.appointments[index] = appointment;
-    } else {
-      this.appointments.push(appointment);
-    }
-
-    localStorage.setItem('appointments', JSON.stringify(this.appointments)); // Guardar citas en localStorage
-    this.showToastMessage('Cita guardada correctamente'); // Mostrar mensaje de éxito
-    this.closeModal(); // Cerrar el modal
+    // Delegar el guardado en el servicio
+    this.calendarService.saveAppointment(appointment);
+    // Refrescar la lista de citas
+    this.appointments = this.calendarService.getAppointments();
+    this.showToastMessage('Cita guardada correctamente');
+    this.closeModal();
   }
 
-  // Cargar citas guardadas desde el localStorage
+  /**
+   * Carga las citas almacenadas delegando en el servicio.
+   */
   loadAppointments(): void {
-    const savedAppointments = localStorage.getItem('appointments');
-    if (savedAppointments) {
-      this.appointments = JSON.parse(savedAppointments);
-    }
+    this.appointments = this.calendarService.getAppointments();
   }
 
-  // Verificar si un horario ya está ocupado
+  /**
+   * Verifica si un horario ya está ocupado.
+   */
   isTimeSlotBooked(time: string): boolean {
     return this.appointments.some(
-      (appointment) =>
+      appointment =>
         appointment.date === this.selectedDate && appointment.time === time
     );
   }
 
-  // Generar un ID único para cada cita
-  generateUniqueId(): string {
-    return Date.now().toString(36) + Math.random().toString(36).substring(2);
-  }
-
-  // Mostrar un mensaje Toast
+  /**
+   * Muestra un mensaje Toast.
+   */
   showToastMessage(message: string): void {
     this.toastMessage = message;
     this.showToast = true;
-    setTimeout(() => (this.showToast = false), 3000); // Ocultar después de 3 segundos
+    setTimeout(() => (this.showToast = false), 3000);
   }
 
-  // Abrir el modal con los datos de la cita
+  /**
+   * Abre el modal y carga los datos de la cita si ya existe.
+   */
   openModal(time: string): void {
     this.selectedTime = time;
     this.currentAppointment = this.appointments.find(
-      (a) => a.date === this.selectedDate && a.time === time
+      appointment => appointment.date === this.selectedDate && appointment.time === time
     ) || null;
 
-    // Cargar datos del formulario si la cita ya existe
     if (this.currentAppointment) {
       this.clientName = this.currentAppointment.clientName;
       this.paid = this.currentAppointment.paid;
@@ -139,16 +126,20 @@ export class CalendarPage {
       this.resetForm();
     }
 
-    this.isModalOpen = true; // Abrir el modal
+    this.isModalOpen = true;
   }
 
-  // Cerrar el modal
+  /**
+   * Cierra el modal y reinicia el formulario.
+   */
   closeModal(): void {
     this.isModalOpen = false;
     this.resetForm();
   }
 
-  // Reiniciar el formulario
+  /**
+   * Reinicia los datos del formulario.
+   */
   resetForm(): void {
     this.clientName = '';
     this.paid = false;
@@ -156,13 +147,15 @@ export class CalendarPage {
     this.notes = '';
   }
 
-  // Borrar una cita
+  /**
+   * Elimina la cita actual delegando en el servicio.
+   */
   deleteAppointment(): void {
     if (this.currentAppointment) {
-      this.appointments = this.appointments.filter(a => a.id !== this.currentAppointment?.id);
-      localStorage.setItem('appointments', JSON.stringify(this.appointments)); // Actualizar localStorage
-      this.showToastMessage('Cita eliminada correctamente'); // Mostrar mensaje de éxito
-      this.closeModal(); // Cerrar el modal
+      this.calendarService.deleteAppointment(this.currentAppointment.id);
+      this.appointments = this.calendarService.getAppointments();
+      this.showToastMessage('Cita eliminada correctamente');
+      this.closeModal();
     }
   }
 }
