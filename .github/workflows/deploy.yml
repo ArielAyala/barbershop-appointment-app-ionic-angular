@@ -10,30 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repo
-      - name: Checkout repository
+      # Configurar Node.js usando la versión @v4 (con Node 20)
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
 
-      # Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'  # or any LTS version you prefer
-
-      # Install dependencies
+      # Instalar dependencias
       - name: Install dependencies
         run: npm install
 
-      # Build the project
+      # Compilar el proyecto
       - name: Build
         run: npm run build -- --prod --base-href="/barbershop-appointment-app-ionic-angular/"
-        # If your build output is in "dist/barber-shop", this command will generate that folder.
 
-      # Deploy to GitHub Pages using peaceiris/actions-gh-pages
+      # Desplegar a GitHub Pages usando peaceiris/actions-gh-pages
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/barber-shop  # Update if your output folder differs (for Ionic projects, it might be `www`)
+          publish_dir: ./dist/barber-shop  # Ajusta si tu carpeta de salida es diferente (por ejemplo, "www" en proyectos Ionic)
