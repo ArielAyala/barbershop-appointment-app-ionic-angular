@@ -1,12 +1,13 @@
 <app-header title="Calendario - citas"></app-header>
 
 <ion-content class="ion-padding">
-  <ion-datetime presentation="date" [(ngModel)]="selectedDate" (ionChange)="onDateSelected($event)"></ion-datetime>
+  <div class="date-picker-container">
+    <ion-datetime presentation="date" [(ngModel)]="selectedDate" (ionChange)="onDateSelected($event)"></ion-datetime>
+  </div>
 
   <div class="time-slots-container">
 
-      <ion-text style="text-align: center;">Turnos disponibles para {{ selectedDate | date:'mediumDate' }}</ion-text>
-
+    <ion-text style="text-align: center;">Turnos disponibles para {{ selectedDate | date:'mediumDate' }}</ion-text>
 
     <ion-grid>
       <ion-row>
