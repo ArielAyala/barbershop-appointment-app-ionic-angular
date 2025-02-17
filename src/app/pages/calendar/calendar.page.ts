@@ -20,7 +20,7 @@ import { SharedIonicModule } from 'src/app/shared/shared-ionic.module';
     HeaderComponent,
   ]
 })
-export class CalendarPage {
+export default class CalendarPage {
   selectedDate: string = new Date().toISOString();
   availableTimes: string[] = [];
   appointments: Appointment[] = [];
@@ -36,7 +36,7 @@ export class CalendarPage {
   amount: number = 0;
   notes: string = '';
 
-  constructor(private calendarService: CalendarService) {
+  constructor(private readonly calendarService: CalendarService) {
     addIcons({ closeCircleOutline, saveOutline, trashOutline }); // Añadir íconos
   }
 

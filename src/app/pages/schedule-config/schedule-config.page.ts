@@ -36,7 +36,7 @@ import { HeaderComponent } from "../../components/header/header.component";
     IonLabel,
 ]
 })
-export class ScheduleConfigPage implements OnInit {
+export default class ScheduleConfigPage implements OnInit {
   selectedDate: string = new Date().toISOString();
   availableTimes: string[] = [];
   newTime: string = '';

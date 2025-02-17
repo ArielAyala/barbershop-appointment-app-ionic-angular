@@ -27,9 +27,6 @@ export class CalendarService {
   // Clave para almacenar las citas
   private appointmentsStorageKey = 'appointments';
 
-  /* ==========================
-     Lógica de Horarios (Time Slots)
-  ========================== */
 
   /**
    * Formatea la fecha a un formato amigable: YYYY-MM-DD
@@ -52,6 +49,7 @@ export class CalendarService {
     const formattedDate = this.formatDate(date);
     const storedObjectStr = localStorage.getItem(this.timeSlotsStorageKey);
     let timeslotsByDate = storedObjectStr ? JSON.parse(storedObjectStr) : {};
+    console.log(timeslotsByDate);
 
     if (timeslotsByDate[formattedDate]) {
       return timeslotsByDate[formattedDate];
