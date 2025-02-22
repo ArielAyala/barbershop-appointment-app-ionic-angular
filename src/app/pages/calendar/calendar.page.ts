@@ -65,7 +65,7 @@ export default class CalendarPage {
    */
   saveAppointment(): void {
     const appointment: Appointment = {
-      id: this.currentAppointment?.id || this.calendarService.generateUniqueId(),
+      id: this.currentAppointment?.id || this.calendarService.generateAppointmentId(this.selectedDate, this.selectedTime),
       date: this.selectedDate,
       time: this.selectedTime,
       clientName: this.clientName,
