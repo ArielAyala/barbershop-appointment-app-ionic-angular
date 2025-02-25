@@ -1,12 +1,17 @@
 // src/app/pages/calendar/calendar.page.ts
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { closeCircleOutline, saveOutline, trashOutline } from 'ionicons/icons';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { CalendarService, Appointment } from 'src/app/services/calendar.service';
 import { SharedIonicModule } from 'src/app/shared/shared-ionic.module';
+import { DateUtils } from 'src/app/utils/date-utils';
+
+registerLocaleData(localeEs, 'es');
+
 
 @Component({
   selector: 'app-calendar',
@@ -21,9 +26,11 @@ import { SharedIonicModule } from 'src/app/shared/shared-ionic.module';
   ]
 })
 export default class CalendarPage {
-  selectedDate: string = new Date().toISOString();
+  // Se inicializa usando DateUtils para obtener la fecha local en formato YYYY-MM-DD
+  selectedDate: string = DateUtils.getCurrentDate();
   availableTimes: string[] = [];
   appointments: Appointment[] = [];
+  pastAppointments: Appointment[] = [];
   showToast: boolean = false;
   toastMessage: string = '';
   isModalOpen: boolean = false;
@@ -37,27 +44,56 @@ export default class CalendarPage {
   notes: string = '';
 
   constructor(private readonly calendarService: CalendarService) {
-    addIcons({ closeCircleOutline, saveOutline, trashOutline }); // Añadir íconos
+    addIcons({ closeCircleOutline, saveOutline, trashOutline });
   }
 
   ionViewWillEnter(): void {
-    this.loadTimeSlotsForDate(this.selectedDate);
-    this.loadAppointments();
+    this.loadDataForSelectedDate();
   }
 
   /**
-   * Carga los horarios para la fecha indicada delegando en el servicio.
+   * Determina si la fecha seleccionada es pasada.
+   * Compara el string en formato "YYYY-MM-DD" con la fecha actual.
    */
-  loadTimeSlotsForDate(date: string): void {
-    this.availableTimes = this.calendarService.getTimeSlotsForDate(date);
+  isPastDate(): boolean {
+    const today = DateUtils.getCurrentDate();
+    return this.selectedDate < today;
+  }
+
+  /**
+   * Carga los datos según la fecha seleccionada.
+   * - Si la fecha es pasada, carga las citas registradas para ese día.
+   * - Si es hoy o futura, carga los turnos disponibles.
+   */
+  private loadDataForSelectedDate(): void {
+    if (this.isPastDate()) {
+      this.pastAppointments = this.calendarService.getAppointmentsForDate(this.selectedDate);
+      this.availableTimes = [];
+    } else {
+      this.availableTimes = this.calendarService.getTimeSlotsForDate(this.selectedDate);
+      console.log('availableTimes', this.availableTimes)
+      this.pastAppointments = [];
+    }
+    this.appointments = this.calendarService.getAppointments();
   }
 
   /**
    * Evento al cambiar la fecha en el ion-datetime.
+   * Convierte el valor recibido al formato local YYYY-MM-DD usando DateUtils.
    */
   onDateSelected(event: any): void {
+    //this.selectedDate = DateUtils.formatDate(new Date(fullDate));
     this.selectedDate = event.detail.value;
-    this.loadTimeSlotsForDate(this.selectedDate);
+    console.log('selected date', this.selectedDate);
+    this.loadDataForSelectedDate();
+  }
+
+  /**
+   * Verifica si un turno ya está ocupado en la fecha seleccionada.
+   */
+  isTimeSlotBooked(time: string): boolean {
+    const appointmentsForDay = this.calendarService.getAppointmentsForDate(this.selectedDate);
+    return appointmentsForDay.some(appointment => appointment.time === time);
   }
 
   /**
@@ -74,29 +110,10 @@ export default class CalendarPage {
       notes: this.notes
     };
 
-    // Delegar el guardado en el servicio
     this.calendarService.saveAppointment(appointment);
-    // Refrescar la lista de citas
-    this.appointments = this.calendarService.getAppointments();
+    this.loadDataForSelectedDate();
     this.showToastMessage('Cita guardada correctamente');
     this.closeModal();
-  }
-
-  /**
-   * Carga las citas almacenadas delegando en el servicio.
-   */
-  loadAppointments(): void {
-    this.appointments = this.calendarService.getAppointments();
-  }
-
-  /**
-   * Verifica si un horario ya está ocupado.
-   */
-  isTimeSlotBooked(time: string): boolean {
-    return this.appointments.some(
-      appointment =>
-        appointment.date === this.selectedDate && appointment.time === time
-    );
   }
 
   /**
@@ -110,11 +127,13 @@ export default class CalendarPage {
 
   /**
    * Abre el modal y carga los datos de la cita si ya existe.
+   * Se usa para fechas actuales/futuras.
    */
   openModal(time: string): void {
     this.selectedTime = time;
     this.currentAppointment = this.appointments.find(
-      appointment => appointment.date === this.selectedDate && appointment.time === time
+      appointment =>
+        appointment.date === this.selectedDate && appointment.time === time
     ) || null;
 
     if (this.currentAppointment) {
@@ -125,7 +144,6 @@ export default class CalendarPage {
     } else {
       this.resetForm();
     }
-
     this.isModalOpen = true;
   }
 
@@ -153,7 +171,7 @@ export default class CalendarPage {
   deleteAppointment(): void {
     if (this.currentAppointment) {
       this.calendarService.deleteAppointment(this.currentAppointment.id);
-      this.appointments = this.calendarService.getAppointments();
+      this.loadDataForSelectedDate();
       this.showToastMessage('Cita eliminada correctamente');
       this.closeModal();
     }

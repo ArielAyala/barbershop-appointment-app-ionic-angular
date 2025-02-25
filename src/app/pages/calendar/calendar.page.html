@@ -1,18 +1,21 @@
 <app-header title="Calendario - citas"></app-header>
 
 <ion-content class="ion-padding">
+
+  <ion-text style="text-align: center;">
+    Citas del {{ selectedDate | date:'EEEE, d MMMM y':'':'es' }}
+  </ion-text>
+
   <div class="date-picker-container">
     <ion-datetime presentation="date" [(ngModel)]="selectedDate" (ionChange)="onDateSelected($event)"></ion-datetime>
   </div>
 
-  <div class="time-slots-container">
-
-    <ion-text style="text-align: center;">Turnos disponibles para {{ selectedDate | date:'mediumDate' }}</ion-text>
-
+  <!-- Vista para hoy/futuro: muestra turnos disponibles -->
+  <div *ngIf="!isPastDate()" class="time-slots-container">
     <ion-grid>
       <ion-row>
-        <ion-col size="6" *ngFor="let time of availableTimes" (click)="openModal(time)">
-          <ion-button expand="block" fill="outline" class="time-button">
+        <ion-col size="6" *ngFor="let time of availableTimes">
+          <ion-button expand="block" fill="outline" class="time-button" (click)="openModal(time)">
             {{ time }} HS
             <span *ngIf="isTimeSlotBooked(time)" class="booked-label">(Ocupado)</span>
           </ion-button>
@@ -21,7 +24,25 @@
     </ion-grid>
   </div>
 
-  <!-- Modal para el formulario -->
+  <!-- Vista para fechas pasadas: muestra las citas agendadas -->
+  <div *ngIf="isPastDate()" class="past-appointments-container">
+    <ion-text style="text-align: center;">Citas del {{ selectedDate | date:'mediumDate' }}</ion-text>
+    <ion-list>
+      <ion-item *ngFor="let app of pastAppointments">
+        <ion-label>
+          <h2>{{ app.time }} HS - {{ app.clientName }}</h2>
+          <p>Monto: {{ app.amount }} - Observaciones: {{ app.notes }}</p>
+          <p *ngIf="app.paid">Pagado</p>
+          <p *ngIf="!app.paid">Pendiente de pago</p>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngIf="pastAppointments.length === 0">
+        <ion-label>No hay citas registradas para esta fecha.</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Modal para el formulario (se usa solo para agendar, por lo que se muestra en fechas actuales/futuras) -->
   <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
     <ng-template>
       <ion-header>
@@ -36,33 +57,27 @@
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
-
       <ion-content class="ion-padding">
         <form (ngSubmit)="saveAppointment()">
           <ion-item>
             <ion-label position="floating">Nombre del cliente</ion-label>
             <ion-input [(ngModel)]="clientName" name="clientName" required></ion-input>
           </ion-item>
-
           <ion-item>
             <ion-checkbox [(ngModel)]="paid" name="paid">Ya pagó</ion-checkbox>
           </ion-item>
-
           <ion-item>
             <ion-label position="floating">Monto</ion-label>
             <ion-input type="number" [(ngModel)]="amount" name="amount"></ion-input>
           </ion-item>
-
           <ion-item>
             <ion-label position="floating">Observaciones</ion-label>
             <ion-textarea [(ngModel)]="notes" name="notes"></ion-textarea>
           </ion-item>
-
           <ion-button expand="block" type="submit">
             <ion-icon name="save-outline"></ion-icon>
             Guardar
           </ion-button>
-
           <ion-button *ngIf="currentAppointment" expand="block" color="danger" (click)="deleteAppointment()">
             <ion-icon name="trash-outline"></ion-icon>
             Eliminar cita
