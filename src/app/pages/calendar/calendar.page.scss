@@ -1,39 +1,199 @@
+/* Variables personalizadas para tener consistencia */
+:root {
+  --app-border-radius: 12px;
+  --app-transition: all 0.3s ease;
+  --app-shadow-light: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --app-shadow-dark: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
 
+/* Contenedor principal con más espacio para respirar */
+ion-content {
+  --padding-top: 16px;
+  --padding-bottom: 24px;
+}
+
+/* Estilos para el título de la fecha */
+ion-text {
+  display: block;
+  font-weight: 600;
+  font-size: 18px;
+  margin-bottom: 20px;
+  letter-spacing: -0.3px;
+}
+
+/* Contenedor del selector de fecha */
 .date-picker-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 16px;
+
+  ion-datetime {
+    border-radius: 12px;
+
+    &::part(calendar-day) {
+      border-radius: 50%;
+    }
+
+    &::part(calendar-day-active) {
+      background: var(--ion-color-primary);
+      color: white;
+      font-weight: bold;
+    }
+  }
 }
 
+/* Contenedor de los slots de tiempo */
 .time-slots-container {
-  margin-top: 30px;
-  animation: fadeIn 0.5s ease-in;
+  margin-top: 24px;
+  animation: fadeIn 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+
+  ion-grid {
+    padding: 0;
+  }
+
+  ion-col {
+    padding: 4px;
+  }
 }
 
+/* Estilos para los botones de tiempo */
 .time-button {
-  margin: 5px;
-  --border-color: var(--ion-color-primary);
+  margin: 0;
+  height: 52px;
+  //--border-radius: var(--app-border-radius);
+  --border-width: 1px;
+  //--border-color: var(--ion-color-primary);
   --color: var(--ion-color-primary);
+  // --box-shadow: none;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --transition: var(--app-transition);
+  // font-weight: 500;
 
   &:hover {
-    --background: var(--ion-color-primary);
-    --color: white;
+    --background: rgba(var(--ion-color-primary-rgb), 0.1);
+    --opacity: 1;
+    transform: translateY(-2px);
   }
 
   &[disabled] {
-    --background: #e0e0e0;
-    --color: #a0a0a0;
+    --background: rgba(var(--ion-color-medium-rgb), 0.1);
+    --border-color: var(--ion-color-medium);
+    --color: var(--ion-color-medium);
+    opacity: 0.7;
     cursor: not-allowed;
+  }
+
+  &.time-booked {
+    position: relative;
+    overflow: visible;
   }
 }
 
+/* Estilos para la etiqueta de ocupado */
 .booked-label {
   font-size: 0.8em;
-  color: #ff0000;
+  color: var(--ion-color-danger);
+  font-weight: 500;
   margin-left: 5px;
 }
 
+/* Estilos para citas pasadas */
+.past-appointments-container {
+  margin-top: 24px;
+  animation: fadeIn 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+
+  ion-list {
+    background: transparent;
+    padding: 0;
+    margin-top: 16px;
+    border-radius: var(--app-border-radius);
+    overflow: hidden;
+  }
+
+  ion-item {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    --border-radius: var(--app-border-radius);
+    --background: rgba(var(--ion-color-light-rgb), 0.7);
+    margin-bottom: 8px;
+
+    h2 {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    p {
+      font-size: 14px;
+      margin: 4px 0;
+
+      &:last-child {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+/* Estilos para el modal */
+ion-modal {
+  ion-item {
+    --padding-start: 0;
+    --padding-end: 0;
+    --inner-padding-end: 0;
+    margin-bottom: 16px;
+
+    ion-label {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    ion-input,
+    ion-textarea {
+      --padding-start: 12px;
+      --padding-end: 12px;
+      --padding-top: 12px;
+      --padding-bottom: 12px;
+      --background: rgba(var(--ion-color-light-rgb), 0.7);
+    }
+
+    ion-checkbox {
+      margin-right: 12px;
+    }
+  }
+}
+
+/* Animación mejorada */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos específicos para tema oscuro */
+@media (prefers-color-scheme: dark) {
+  .time-button {
+    --background: rgba(255, 255, 255, 0.05);
+
+    &:hover {
+      --background: rgba(var(--ion-color-primary-rgb), 0.2);
+    }
+  }
+
+  .past-appointments-container ion-item {
+    --background: rgba(255, 255, 255, 0.1);
+  }
+
+  ion-modal ion-input,
+  ion-modal ion-textarea {
+    --background: rgba(255, 255, 255, 0.08);
+  }
 }

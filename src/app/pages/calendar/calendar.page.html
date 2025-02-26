@@ -15,9 +15,10 @@
     <ion-grid>
       <ion-row>
         <ion-col size="6" *ngFor="let time of availableTimes">
-          <ion-button expand="block" fill="outline" class="time-button" (click)="openModal(time)">
-            {{ time }} HS
-            <span *ngIf="isTimeSlotBooked(time)" class="booked-label">(Ocupado)</span>
+          <ion-button expand="block" fill="outline" shape="round" [class.time-booked]="isTimeSlotBooked(time)"
+            class="time-button" (click)="openModal(time)" (keyup)="openModal(time)">
+            {{ time }} Hs
+            <span *ngIf="isTimeSlotBooked(time)" class="booked-label">Ocupado</span>
           </ion-button>
         </ion-col>
       </ion-row>
@@ -46,16 +47,17 @@
   <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
     <ng-template>
       <ion-header>
-        <ion-toolbar color="primary">
+        <ion-toolbar>
           <ion-title>
             {{ selectedDate | date:'mediumDate' }} - {{ selectedTime }}
           </ion-title>
-          <ion-buttons slot="end">
+          <ion-buttons slot="end" style="display: flex; align-items: center;">
             <ion-button (click)="closeModal()">
               <ion-icon name="close-circle-outline"></ion-icon>
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
+
       </ion-header>
       <ion-content class="ion-padding">
         <form (ngSubmit)="saveAppointment()">
@@ -74,11 +76,12 @@
             <ion-label position="floating">Observaciones</ion-label>
             <ion-textarea [(ngModel)]="notes" name="notes"></ion-textarea>
           </ion-item>
-          <ion-button expand="block" type="submit">
+          <ion-button expand="block" type="submit" shape="round">
             <ion-icon name="save-outline"></ion-icon>
             Guardar
           </ion-button>
-          <ion-button *ngIf="currentAppointment" expand="block" color="danger" (click)="deleteAppointment()">
+          <ion-button *ngIf="currentAppointment" expand="block" shape="round" color="danger"
+            (click)="deleteAppointment()">
             <ion-icon name="trash-outline"></ion-icon>
             Eliminar cita
           </ion-button>
