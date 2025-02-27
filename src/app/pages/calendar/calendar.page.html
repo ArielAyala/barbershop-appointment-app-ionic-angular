@@ -24,6 +24,15 @@
       </ion-row>
     </ion-grid>
   </div>
+  <br />
+  <br />
+  <br />
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="shareSchedule()">
+      <ion-icon name="share-social-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
   <!-- Vista para fechas pasadas: muestra las citas agendadas -->
   <div *ngIf="isPastDate()" class="past-appointments-container">

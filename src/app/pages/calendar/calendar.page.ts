@@ -4,11 +4,12 @@ import { CommonModule, registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { closeCircleOutline, saveOutline, trashOutline } from 'ionicons/icons';
+import { closeCircleOutline, saveOutline, shareSocialOutline, trashOutline } from 'ionicons/icons';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { CalendarService, Appointment } from 'src/app/services/calendar.service';
 import { SharedIonicModule } from 'src/app/shared/shared-ionic.module';
 import { DateUtils } from 'src/app/utils/date-utils';
+import html2canvas from 'html2canvas';
 
 registerLocaleData(localeEs, 'es');
 
@@ -44,7 +45,7 @@ export default class CalendarPage {
   notes: string = '';
 
   constructor(private readonly calendarService: CalendarService) {
-    addIcons({ closeCircleOutline, saveOutline, trashOutline });
+    addIcons({ closeCircleOutline, saveOutline, trashOutline, shareSocialOutline });
   }
 
   ionViewWillEnter(): void {
@@ -84,7 +85,6 @@ export default class CalendarPage {
   onDateSelected(event: any): void {
     //this.selectedDate = DateUtils.formatDate(new Date(fullDate));
     this.selectedDate = event.detail.value;
-    console.log('selected date', this.selectedDate);
     this.loadDataForSelectedDate();
   }
 
@@ -174,6 +174,28 @@ export default class CalendarPage {
       this.loadDataForSelectedDate();
       this.showToastMessage('Cita eliminada correctamente');
       this.closeModal();
+    }
+  }
+
+  async shareSchedule(): Promise<void> {
+    const scheduleElement: any = document.querySelector('.time-slots-container');
+
+    if (scheduleElement) {
+      const canvas = await html2canvas(scheduleElement);
+      const image = canvas.toDataURL('image/png');
+
+      if (navigator.share) {
+        const blob = await (await fetch(image)).blob();
+        const file = new File([blob], "horarios.png", { type: "image/png" });
+
+        navigator.share({
+          files: [file],
+          title: 'Horarios disponibles',
+          text: 'Aquí están los horarios disponibles para agendar.',
+        }).catch(err => console.log('Error al compartir', err));
+      } else {
+        console.log('La API de compartir no está soportada');
+      }
     }
   }
 }

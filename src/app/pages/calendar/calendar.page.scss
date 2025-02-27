@@ -61,15 +61,12 @@ ion-text {
 .time-button {
   margin: 0;
   height: 52px;
-  //--border-radius: var(--app-border-radius);
   --border-width: 1px;
-  //--border-color: var(--ion-color-primary);
+
   --color: var(--ion-color-primary);
-  // --box-shadow: none;
   --padding-start: 8px;
   --padding-end: 8px;
   --transition: var(--app-transition);
-  // font-weight: 500;
 
   &:hover {
     --background: rgba(var(--ion-color-primary-rgb), 0.1);
