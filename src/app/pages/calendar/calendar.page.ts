@@ -48,6 +48,7 @@ export default class CalendarPage {
   }
 
   ionViewWillEnter(): void {
+    this.selectedDate = DateUtils.getCurrentDate();
     this.loadDataForSelectedDate();
   }
 
@@ -71,7 +72,6 @@ export default class CalendarPage {
       this.availableTimes = [];
     } else {
       this.availableTimes = this.calendarService.getTimeSlotsForDate(this.selectedDate);
-      console.log('availableTimes', this.availableTimes)
       this.pastAppointments = [];
     }
     this.appointments = this.calendarService.getAppointments();
