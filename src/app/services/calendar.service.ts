@@ -52,13 +52,25 @@ export class CalendarService {
         return timeslotsByDate[dateFilter];
       } else {
         // Inicializar con la plantilla por defecto y guardar
-        timeslotsByDate[dateFilter] = this.defaultTimeSlots;
+        const defaultSlots = this.getDefaultTimeSlots();
+        timeslotsByDate[dateFilter] = defaultSlots;
         localStorage.setItem(STORAGE_KEYS.TIME_SLOTS, JSON.stringify(timeslotsByDate));
         return this.defaultTimeSlots;
       }
     } else {
       // Para fechas pasadas, retornamos un arreglo vacío
       return [];
+    }
+  }
+
+  private getDefaultTimeSlots(): string[] {
+    const stored = localStorage.getItem(STORAGE_KEYS.DEFAULT_TIME_SLOTS);
+    if (stored) {
+      return JSON.parse(stored);
+    } else {
+      // Si no existe, guarda la plantilla interna en el storage y retorna ese valor
+      localStorage.setItem(STORAGE_KEYS.DEFAULT_TIME_SLOTS, JSON.stringify(this.defaultTimeSlots));
+      return this.defaultTimeSlots;
     }
   }
 
