@@ -40,7 +40,7 @@ export default class CalendarPage {
   // Datos del formulario
   clientName: string = '';
   paid: boolean = false;
-  amount: number = 0;
+  amountStr: string = '';
   notes: string = '';
 
   constructor(private readonly calendarService: CalendarService) {
@@ -106,7 +106,7 @@ export default class CalendarPage {
       time: this.selectedTime,
       clientName: this.clientName,
       paid: this.paid,
-      amount: this.amount,
+      amount:  this.amountStr ? parseFloat(this.amountStr) : 0,
       notes: this.notes
     };
 
@@ -139,7 +139,7 @@ export default class CalendarPage {
     if (this.currentAppointment) {
       this.clientName = this.currentAppointment.clientName;
       this.paid = this.currentAppointment.paid;
-      this.amount = this.currentAppointment.amount;
+      this.amountStr = this.currentAppointment.amount.toString();
       this.notes = this.currentAppointment.notes;
     } else {
       this.resetForm();
@@ -161,7 +161,7 @@ export default class CalendarPage {
   resetForm(): void {
     this.clientName = '';
     this.paid = false;
-    this.amount = 0;
+    this.amountStr = '';
     this.notes = '';
   }
 
