@@ -136,32 +136,32 @@ ion-text {
 }
 
 /* Estilos para el modal */
-ion-modal {
-  ion-item {
-    --padding-start: 0;
-    --padding-end: 0;
-    --inner-padding-end: 0;
-    margin-bottom: 16px;
+// ion-modal {
+//   ion-item {
+//     --padding-start: 0;
+//     --padding-end: 0;
+//     --inner-padding-end: 0;
+//     margin-bottom: 16px;
 
-    ion-label {
-      font-size: 14px;
-      font-weight: 500;
-    }
+//     ion-label {
+//       font-size: 14px;
+//       font-weight: 500;
+//     }
 
-    ion-input,
-    ion-textarea {
-      --padding-start: 12px;
-      --padding-end: 12px;
-      --padding-top: 12px;
-      --padding-bottom: 12px;
-      --background: rgba(var(--ion-color-light-rgb), 0.7);
-    }
+//     ion-input,
+//     ion-textarea {
+//       --padding-start: 12px;
+//       --padding-end: 12px;
+//       --padding-top: 12px;
+//       --padding-bottom: 12px;
+//       --background: rgba(var(--ion-color-light-rgb), 0.7);
+//     }
 
-    ion-checkbox {
-      margin-right: 12px;
-    }
-  }
-}
+//     ion-checkbox {
+//       margin-right: 12px;
+//     }
+//   }
+// }
 
 /* Animación mejorada */
 @keyframes fadeIn {
