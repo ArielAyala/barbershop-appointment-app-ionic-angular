@@ -1,0 +1,16 @@
+.buttons-container {
+  margin-top: 15px;
+  margin-bottom: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.action-button {
+  display: flex;
+  align-items: center; /* Centra verticalmente */
+  margin-bottom: 10px;
+
+  ion-icon {
+    margin-right: 8px; /* Espacio entre el ícono y el texto */
+  }
+}

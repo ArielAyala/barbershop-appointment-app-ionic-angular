@@ -1,0 +1,46 @@
+<ion-modal [isOpen]="isOpen" (didDismiss)="closeModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>
+          {{ selectedDate | date:'mediumDate' }} - {{ selectedTime }}
+        </ion-title>
+        <ion-buttons slot="end" style="display: flex; align-items: center;">
+          <ion-button (click)="closeModal()">
+            <ion-icon name="close-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <form (ngSubmit)="saveAppointment()">
+        <ion-item>
+          <ion-input label="Nombre del cliente" label-placement="floating" [(ngModel)]="clientName" name="clientName"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-checkbox [(ngModel)]="paid" name="paid">Ya pagó</ion-checkbox>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Monto" label-placement="floating" [(ngModel)]="amountStr" name="amount"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-textarea label="Observaciones" labelPlacement="floating" [(ngModel)]="notes" name="notes"></ion-textarea>
+        </ion-item>
+
+        <div class="buttons-container">
+          <ion-button class="action-button save-button" expand="block" type="submit" shape="round">
+            <ion-icon name="save-outline"></ion-icon>
+            <span>{{ currentAppointment ? 'Actualizar' : 'Guardar' }}</span>
+          </ion-button>
+
+          <ion-button class="action-button delete-button" *ngIf="currentAppointment" expand="block" shape="round"
+            color="danger" (click)="deleteAppointment()">
+            <ion-icon name="trash-outline"></ion-icon>
+            <span>Eliminar cita</span>
+          </ion-button>
+        </div>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
