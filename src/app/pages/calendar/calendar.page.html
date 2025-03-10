@@ -53,50 +53,15 @@
   </div>
 
   <!-- Modal para el formulario (se usa solo para agendar, por lo que se muestra en fechas actuales/futuras) -->
-  <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>
-            {{ selectedDate | date:'mediumDate' }} - {{ selectedTime }}
-          </ion-title>
-          <ion-buttons slot="end" style="display: flex; align-items: center;">
-            <ion-button (click)="closeModal()">
-              <ion-icon name="close-circle-outline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-
-      </ion-header>
-      <ion-content class="ion-padding">
-        <form (ngSubmit)="saveAppointment()">
-          <ion-item>
-            <ion-input label="Nombre del cliente" label-placement="floating" [(ngModel)]="clientName"
-              name="clientName"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-checkbox [(ngModel)]="paid" name="paid">Ya pagó</ion-checkbox>
-          </ion-item>
-          <ion-item>
-            <ion-input label="Monto" label-placement="floating" [(ngModel)]="amountStr" name="amount"></ion-input>
-          </ion-item>
-          <ion-item>
-            <!-- <ion-label position="floating">Observaciones</ion-label> -->
-            <ion-textarea label="Observaciones" labelPlacement="floating" [(ngModel)]="notes" name="notes"></ion-textarea>
-          </ion-item>
-          <ion-button expand="block" type="submit" shape="round">
-            <ion-icon name="save-outline"></ion-icon>
-            Guardar
-          </ion-button>
-          <ion-button *ngIf="currentAppointment" expand="block" shape="round" color="danger"
-            (click)="deleteAppointment()">
-            <ion-icon name="trash-outline"></ion-icon>
-            Eliminar cita
-          </ion-button>
-        </form>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
+  <app-appointment-modal
+    [isOpen]="isModalOpen"
+    [selectedDate]="selectedDate"
+    [selectedTime]="selectedTime"
+    [currentAppointment]="currentAppointment"
+    (modalClose)="closeModal()"
+    (appointmentSave)="onAppointmentSave($event)"
+    (appointmentDelete)="deleteAppointment()"
+  ></app-appointment-modal>
 
   <!-- Toast para mensajes -->
   <ion-toast [isOpen]="showToast" [message]="toastMessage" duration="3000" position="top"></ion-toast>

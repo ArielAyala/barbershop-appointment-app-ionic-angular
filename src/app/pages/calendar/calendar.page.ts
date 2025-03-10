@@ -6,10 +6,12 @@ import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { closeCircleOutline, saveOutline, shareSocialOutline, trashOutline } from 'ionicons/icons';
 import { HeaderComponent } from 'src/app/components/header/header.component';
-import { CalendarService, Appointment } from 'src/app/services/calendar.service';
+import { CalendarService } from 'src/app/services/calendar.service';
 import { SharedIonicModule } from 'src/app/shared/shared-ionic.module';
 import { DateUtils } from 'src/app/utils/date-utils';
 import html2canvas from 'html2canvas';
+import { Appointment } from 'src/app/models/appointment.model';
+import { AppointmentModalComponent } from './appointment-modal/appointment-modal.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -24,6 +26,7 @@ registerLocaleData(localeEs, 'es');
     FormsModule,
     SharedIonicModule,
     HeaderComponent,
+    AppointmentModalComponent,
   ]
 })
 export default class CalendarPage {
@@ -135,15 +138,6 @@ export default class CalendarPage {
       appointment =>
         appointment.date === this.selectedDate && appointment.time === time
     ) || null;
-
-    if (this.currentAppointment) {
-      this.clientName = this.currentAppointment.clientName;
-      this.paid = this.currentAppointment.paid;
-      this.amountStr = this.currentAppointment.amount.toString();
-      this.notes = this.currentAppointment.notes;
-    } else {
-      this.resetForm();
-    }
     this.isModalOpen = true;
   }
 
@@ -197,5 +191,13 @@ export default class CalendarPage {
         console.log('La API de compartir no está soportada');
       }
     }
+  }
+
+  onAppointmentSave(appointment: Appointment) {
+    // Lógica para guardar la cita
+    this.calendarService.saveAppointment(appointment);
+    this.closeModal();
+    this.showToast = true;
+    this.toastMessage = 'Cita guardada exitosamente';
   }
 }
