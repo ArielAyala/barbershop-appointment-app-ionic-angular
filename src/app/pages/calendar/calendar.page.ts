@@ -7,9 +7,9 @@ import { addIcons } from 'ionicons';
 import { closeCircleOutline, saveOutline, shareSocialOutline, trashOutline } from 'ionicons/icons';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { CalendarService } from 'src/app/services/calendar.service';
+import { SharedService } from 'src/app/services/shared.service';
 import { SharedIonicModule } from 'src/app/shared/shared-ionic.module';
 import { DateUtils } from 'src/app/utils/date-utils';
-import html2canvas from 'html2canvas';
 import { Appointment } from 'src/app/models/appointment.model';
 import { AppointmentModalComponent } from './appointment-modal/appointment-modal.component';
 
@@ -47,7 +47,10 @@ export default class CalendarPage {
   amountStr: string = '';
   notes: string = '';
 
-  constructor(private readonly calendarService: CalendarService) {
+  constructor(
+    private readonly calendarService: CalendarService,
+    private readonly sharedService: SharedService
+  ) {
     addIcons({ closeCircleOutline, saveOutline, trashOutline, shareSocialOutline });
   }
 
@@ -152,25 +155,7 @@ export default class CalendarPage {
   }
 
   async shareSchedule(): Promise<void> {
-    const scheduleElement: any = document.querySelector('.time-slots-container');
-
-    if (scheduleElement) {
-      const canvas = await html2canvas(scheduleElement);
-      const image = canvas.toDataURL('image/png');
-
-      if (navigator.share) {
-        const blob = await (await fetch(image)).blob();
-        const file = new File([blob], "horarios.png", { type: "image/png" });
-
-        navigator.share({
-          files: [file],
-          title: 'Horarios disponibles',
-          text: 'Aquí están los horarios disponibles para agendar.',
-        }).catch(err => console.log('Error al compartir', err));
-      } else {
-        console.log('La API de compartir no está soportada');
-      }
-    }
+    await this.sharedService.shareElement('.time-slots-container');
   }
 
   onAppointmentSave(appointment: Appointment) {
