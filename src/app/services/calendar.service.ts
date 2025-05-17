@@ -20,7 +20,8 @@ export class CalendarService {
    * Formatea la fecha a un formato amigable: YYYY-MM-DD usando DateUtils.
    */
   private formatDate(date: string): string {
-    return DateUtils.formatDate(new Date(date));
+    //return DateUtils.formatDate(new Date(date));
+    return date.split('T')[0];
   }
 
   /**
@@ -111,6 +112,9 @@ export class CalendarService {
    * Guarda o actualiza una cita en la estructura agrupada.
    */
   saveAppointment(appointment: Appointment): void {
+    if (!appointment.id) {
+      appointment.id = this.generateAppointmentId(appointment.date, appointment.time);
+    }
     const formattedDate = this.formatDate(appointment.date);
     const mapping = this.getAppointmentsMapping();
     let appointmentsForDate = mapping[formattedDate] || [];

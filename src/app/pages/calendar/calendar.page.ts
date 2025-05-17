@@ -100,26 +100,6 @@ export default class CalendarPage {
   }
 
   /**
-   * Guarda o actualiza una cita delegando la lógica en el servicio.
-   */
-  saveAppointment(): void {
-    const appointment: Appointment = {
-      id: this.currentAppointment?.id || this.calendarService.generateAppointmentId(this.selectedDate, this.selectedTime),
-      date: this.selectedDate,
-      time: this.selectedTime,
-      clientName: this.clientName,
-      paid: this.paid,
-      amount:  this.amountStr ? parseFloat(this.amountStr) : 0,
-      notes: this.notes
-    };
-
-    this.calendarService.saveAppointment(appointment);
-    this.loadDataForSelectedDate();
-    this.showToastMessage('Cita guardada correctamente');
-    this.closeModal();
-  }
-
-  /**
    * Muestra un mensaje Toast.
    */
   showToastMessage(message: string): void {
@@ -135,8 +115,8 @@ export default class CalendarPage {
   openModal(time: string): void {
     this.selectedTime = time;
     this.currentAppointment = this.appointments.find(
-      appointment =>
-        appointment.date === this.selectedDate && appointment.time === time
+      a => a.date === this.selectedDate
+        && a.time === time
     ) || null;
     this.isModalOpen = true;
   }
@@ -196,8 +176,8 @@ export default class CalendarPage {
   onAppointmentSave(appointment: Appointment) {
     // Lógica para guardar la cita
     this.calendarService.saveAppointment(appointment);
+    this.loadDataForSelectedDate();
+    this.showToastMessage('Cita guardada correctamente');
     this.closeModal();
-    this.showToast = true;
-    this.toastMessage = 'Cita guardada exitosamente';
   }
 }
