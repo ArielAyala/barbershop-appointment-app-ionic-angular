@@ -58,4 +58,19 @@ export class DateUtils {
   static formatDateTime(date: Date): string {
     return date.toLocaleString('en-CA', { hour12: false }).replace(',', '').replace(/\//g, '-');
   }
+
+  /**
+   * Returns the name of the day in English or Spanish based on a date string.
+   *
+   * @param {string} dateString - Date string in YYYY-MM-DD format (from getCurrentDate)
+   * @param {string} language - Language code ('en' for English, 'es' for Spanish)
+   * @returns {string} - Example output: 'Monday' or 'Lunes'
+   */
+  static getDayName(dateString: string, language: 'en' | 'es' = 'en'): string {
+    // Split the date string and create date with local timezone
+    const [year, month, day] = dateString.split('-').map(Number);
+    const date = new Date(year, month - 1, day); // month is 0-based in JavaScript Date
+    const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
+    return date.toLocaleDateString(language, options);
+  }
 }
