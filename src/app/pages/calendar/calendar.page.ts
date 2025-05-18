@@ -12,6 +12,7 @@ import { SharedIonicModule } from 'src/app/shared/shared-ionic.module';
 import { DateUtils } from 'src/app/utils/date-utils';
 import { Appointment } from 'src/app/models/appointment.model';
 import { AppointmentModalComponent } from './appointment-modal/appointment-modal.component';
+import { ShareScheduleData } from 'src/app/configs/share-config';
 
 registerLocaleData(localeEs, 'es');
 
@@ -33,7 +34,8 @@ export default class CalendarPage {
   // Se inicializa usando DateUtils para obtener la fecha local en formato YYYY-MM-DD
   selectedDate: string = DateUtils.getCurrentDate();
   availableTimes: string[] = [];
-  appointments: Appointment[] = [];
+  //appointments: Appointment[] = [];
+  selectedDayAppointments: Appointment[] = [];
   pastAppointments: Appointment[] = [];
   showToast: boolean = false;
   toastMessage: string = '';
@@ -79,9 +81,11 @@ export default class CalendarPage {
       this.availableTimes = [];
     } else {
       this.availableTimes = this.calendarService.getTimeSlotsForDate(this.selectedDate);
+      console.log('availableTimes', this.availableTimes)
       this.pastAppointments = [];
     }
-    this.appointments = this.calendarService.getAppointments();
+    //this.appointments = this.calendarService.getAppointments();
+    this.selectedDayAppointments = this.calendarService.getAppointmentsForDate(this.selectedDate);
   }
 
   /**
@@ -117,7 +121,7 @@ export default class CalendarPage {
    */
   openModal(time: string): void {
     this.selectedTime = time;
-    this.currentAppointment = this.appointments.find(
+    this.currentAppointment = this.selectedDayAppointments.find(
       a => a.date === this.selectedDate
         && a.time === time
     ) || null;
@@ -155,7 +159,16 @@ export default class CalendarPage {
   }
 
   async shareSchedule(): Promise<void> {
-    await this.sharedService.shareElement('.time-slots-container');
+    // 1) Si quieres capturar el DOM:
+    // await this.sharedService.shareElement('.time-slots-container');
+
+    // 2) O generar el póster “gráfico” con DATA:
+    const data: ShareScheduleData = {
+      dayLabel: DateUtils.getDayName(this.selectedDate, 'es'),
+      timeSlots: this.availableTimes
+    };
+
+    await this.sharedService.shareElement(data);
   }
 
   onAppointmentSave(appointment: Appointment) {
