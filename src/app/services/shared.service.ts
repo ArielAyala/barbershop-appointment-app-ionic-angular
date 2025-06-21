@@ -1,4 +1,3 @@
-// src/app/services/shared.service.ts
 import { Injectable } from '@angular/core';
 import html2canvas from 'html2canvas';
 import { SHARE_CONFIG, ShareOverlayOptions, ShareScheduleData } from '../configs/share-config';
@@ -21,29 +20,40 @@ export class SharedService {
     }
   }
 
-  /** Versión original “simple” */
   private async shareSimple(selector: string): Promise<void> {
-    const element: HTMLElement | null = document.querySelector(selector);
-    if (!element) { return; }
+    const canvas = await this.captureElement(selector);
+    if (!canvas) { return; }
 
-    const canvas = await html2canvas(element);
+    await this.shareCanvas(canvas, 'Horarios disponibles', 'Aquí están los horarios disponibles para agendar.');
+  }
+
+  private async captureElement(selector: string): Promise<HTMLCanvasElement | null> {
+    const element = document.querySelector(selector) as HTMLElement | null;
+    if (!element) {
+      console.warn(`SharedService: selector "${selector}" no encontrado.`);
+      return null;
+    }
+    // puedes ajustar scale, backgroundColor, etc. aquí si quisieras
+    return html2canvas(element);
+  }
+
+  private async shareCanvas(canvas: HTMLCanvasElement, title: string, text: string): Promise<void> {
+    if (!navigator.share) {
+      console.warn('API de compartir no soportada.');
+      return;
+    }
+
     const dataUrl = canvas.toDataURL('image/png');
-    if (navigator.share) {
-      const blob = await (await fetch(dataUrl)).blob();
-      const file = new File([blob], 'horarios.png', { type: 'image/png' });
-      try {
-        await navigator.share({
-          files: [file],
-          title: 'Horarios disponibles',
-          text: 'Aquí están los horarios disponibles para agendar.',
-        });
-      } catch (e) {
-        console.error('Error al compartir (simple):', e);
-      }
-    } else {
-      console.warn('API de compartir no soportada (simple).');
+    const blob = await (await fetch(dataUrl)).blob();
+    const file = new File([blob], 'horarios.png', { type: 'image/png' });
+
+    try {
+      await navigator.share({ files: [file], title, text });
+    } catch (e) {
+      console.error('Error al compartir:', e);
     }
   }
+
 
   /** Versión “enriquecida” con fondo, logo y contacto, inyectada OFFSCREEN */
   private async shareWithOverlay(selector: string, cfg: ShareOverlayOptions): Promise<void> {
