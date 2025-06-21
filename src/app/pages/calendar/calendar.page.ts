@@ -33,7 +33,11 @@ registerLocaleData(localeEs, 'es');
 export default class CalendarPage {
   // Se inicializa usando DateUtils para obtener la fecha local en formato YYYY-MM-DD
   selectedDate: string = DateUtils.getCurrentDate();
-  availableTimes: string[] = [];
+  timeSlots: {
+    time: string;
+    booked: boolean;
+    appointment?: Appointment;
+  }[] = [];
   //appointments: Appointment[] = [];
   selectedDayAppointments: Appointment[] = [];
   pastAppointments: Appointment[] = [];
@@ -48,6 +52,7 @@ export default class CalendarPage {
   paid: boolean = false;
   amountStr: string = '';
   notes: string = '';
+  private bookedTimeSlots = new Set<string>();
 
   constructor(
     private readonly calendarService: CalendarService,
@@ -76,16 +81,41 @@ export default class CalendarPage {
    * - Si es hoy o futura, carga los turnos disponibles.
    */
   private loadDataForSelectedDate(): void {
-    if (this.isPastDate()) {
-      this.pastAppointments = this.calendarService.getAppointmentsForDate(this.selectedDate);
-      this.availableTimes = [];
-    } else {
-      this.availableTimes = this.calendarService.getTimeSlotsForDate(this.selectedDate);
-      console.log('availableTimes', this.availableTimes)
-      this.pastAppointments = [];
-    }
-    //this.appointments = this.calendarService.getAppointments();
+
     this.selectedDayAppointments = this.calendarService.getAppointmentsForDate(this.selectedDate);
+
+    if (this.isPastDate()) {
+      this.pastAppointments = this.selectedDayAppointments;
+      this.timeSlots = [];
+      return;
+    }
+
+    const timeSlotsForSelectedDate = this.calendarService.getTimeSlotsForDate(this.selectedDate);
+
+    this.timeSlots = timeSlotsForSelectedDate.map(time => {
+      const booked = this.selectedDayAppointments.find(a => a.time === time);
+      return {
+        time,
+        booked: !!booked,
+        appointment: booked
+      };
+    });
+    console.log('timeSlots', this.timeSlots)
+
+    // Clean pastAppointments
+    this.pastAppointments = [];
+
+    // if (this.isPastDate()) {
+    //   this.pastAppointments = this.calendarService.getAppointmentsForDate(this.selectedDate);
+    //   this.availableTimes = [];
+    // } else {
+    //   this.availableTimes = this.calendarService.getTimeSlotsForDate(this.selectedDate);
+    //   console.log('availableTimes', this.availableTimes)
+    //   this.pastAppointments = [];
+    // }
+    //this.appointments = this.calendarService.getAppointments();
+    //this.selectedDayAppointments = this.calendarService.getAppointmentsForDate(this.selectedDate);
+
   }
 
   /**
@@ -101,10 +131,11 @@ export default class CalendarPage {
   /**
    * Verifica si un turno ya está ocupado en la fecha seleccionada.
    */
-  isTimeSlotBooked(time: string): boolean {
-    const appointmentsForDay = this.calendarService.getAppointmentsForDate(this.selectedDate);
-    return appointmentsForDay.some(appointment => appointment.time === time);
-  }
+  // isTimeSlotBooked(time: string): boolean {
+  //   const appointmentsForDay = this.calendarService.getAppointmentsForDate(this.selectedDate);
+  //   //console.log('time', time, appointmentsForDay);
+  //   return appointmentsForDay.some(appointment => appointment.time === time);
+  // }
 
   /**
    * Muestra un mensaje Toast.
@@ -160,15 +191,15 @@ export default class CalendarPage {
 
   async shareSchedule(): Promise<void> {
     // 1) Si quieres capturar el DOM:
-    // await this.sharedService.shareElement('.time-slots-container');
+    await this.sharedService.shareElement('.time-slots-container');
 
     // 2) O generar el póster “gráfico” con DATA:
-    const data: ShareScheduleData = {
-      dayLabel: DateUtils.getDayName(this.selectedDate, 'es'),
-      timeSlots: this.availableTimes
-    };
+    // const data: ShareScheduleData = {
+    //   dayLabel: DateUtils.getDayName(this.selectedDate, 'es'),
+    //   timeSlots: this.timeSlots
+    // };
 
-    await this.sharedService.shareElement(data);
+    //await this.sharedService.shareElement(data);
   }
 
   onAppointmentSave(appointment: Appointment) {
@@ -178,4 +209,9 @@ export default class CalendarPage {
     this.showToastMessage('Cita guardada correctamente');
     this.closeModal();
   }
+
+  trackByTime(_: number, slot: { time: string }): string {
+    return slot.time;
+  }
+
 }

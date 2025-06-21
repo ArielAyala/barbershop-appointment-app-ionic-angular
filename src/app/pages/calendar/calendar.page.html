@@ -14,17 +14,16 @@
   <div *ngIf="!isPastDate()" class="time-slots-container">
     <ion-grid>
       <ion-row>
-        <ion-col size="6" *ngFor="let time of availableTimes">
-          <ion-button expand="block" fill="outline" shape="round" [class.time-booked]="isTimeSlotBooked(time)"
-            class="time-button" (click)="openModal(time)" (keyup)="openModal(time)">
-            {{ time }} Hs
-            <span *ngIf="isTimeSlotBooked(time)" class="booked-label">Ocupado</span>
+        <ion-col size="6" *ngFor="let slot of timeSlots; trackBy: trackByTime">
+          <ion-button expand="block" fill="outline" shape="round" [class.time-booked]="slot.booked"
+            class="time-button" (click)="openModal(slot.time)" (keyup)="openModal(slot.time)">
+            {{ slot.time }} Hs
+            <span *ngIf="slot.booked" class="booked-label">Ocupado</span>
           </ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
   </div>
-  <br />
   <br />
   <br />
 
