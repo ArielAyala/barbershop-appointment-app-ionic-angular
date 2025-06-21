@@ -1,3 +1,4 @@
+import { TimeSlot } from "../models/time-slot.model";
 
 
 
@@ -10,12 +11,12 @@ export interface ShareOverlayOptions {
 
 export interface ShareScheduleData {
   dayLabel: string;        // p.ej. "SÁBADO"
-  timeSlots: string[];      // ["08:00 HS", "08:40 HS", …]
+  timeSlots: TimeSlot[];      
 }
 
 // tu configuración actual:
 export const SHARE_CONFIG: ShareOverlayOptions = {
-  enhanced: true,
+  enhanced: false,
   backgroundUrl: 'assets/img/background-share.jpeg',
   logoUrl:       'assets/img/logo.jpg',
   contactText:   'Contacto: 0972 706 885'
