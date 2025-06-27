@@ -1,7 +1,10 @@
 # Barbershop Appointment App  
   
 ![GitHub last commit](https://img.shields.io/github/last-commit/ArielAyala/barbershop-appointment-app-ionic-angular)  
-![GitHub license](https://img.shields.io/github/license/ArielAyala/barbershop-appointment-app-ionic-angular)  
+[![License: MIT](https://img.shields.io/badge/License‑MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Angular ^19.0.0](https://img.shields.io/badge/Angular-%5E19.0.0-DD0031?logo=angular&logoColor=white&style=flat-square)](https://angular.io/)
+[![Ionic ^8.0.0](https://img.shields.io/badge/Ionic-%5E8.0.0-3880FF?logo=ionic&logoColor=white&style=flat-square)](https://ionicframework.com/)
+
   
 A mobile-first barbershop appointment management application built with Ionic and Angular [2](#0-1) . This app allows barbershop owners to manage their daily schedules, configure available time slots, and share schedule information with clients.  
   
