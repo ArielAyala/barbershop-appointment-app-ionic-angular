@@ -7,6 +7,8 @@
 
   
 A mobile-first barbershop appointment management application built with Ionic and Angular. This app allows barbershop owners to manage their daily schedules, configure available time slots, and share schedule information with clients.  
+
+Check out the live demo of the application here: https://barber-app.arielayala.me/
   
 ## Technologies Used  
   
