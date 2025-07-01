@@ -47,12 +47,6 @@ export default class CalendarPage {
   selectedTime: string = '';
   currentAppointment: Appointment | null = null; // Cita actual (para editar)
 
-  // Datos del formulario
-  clientName: string = '';
-  paid: boolean = false;
-  amountStr: string = '';
-  notes: string = '';
-  private bookedTimeSlots = new Set<string>();
 
   constructor(
     private readonly calendarService: CalendarService,
@@ -164,22 +158,8 @@ export default class CalendarPage {
    */
   closeModal(): void {
     this.isModalOpen = false;
-    this.resetForm();
   }
 
-  /**
-   * Reinicia los datos del formulario.
-   */
-  resetForm(): void {
-    this.clientName = '';
-    this.paid = false;
-    this.amountStr = '';
-    this.notes = '';
-  }
-
-  /**
-   * Elimina la cita actual delegando en el servicio.
-   */
   deleteAppointment(): void {
     if (this.currentAppointment) {
       this.calendarService.deleteAppointment(this.currentAppointment.id);
