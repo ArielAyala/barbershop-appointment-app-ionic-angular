@@ -140,10 +140,10 @@ export default class CalendarPage {
   /**
    * Muestra un mensaje Toast.
    */
-  showToastMessage(message: string): void {
+  private showToastMessage(message: string): void {
     this.toastMessage = message;
     this.showToast = true;
-    setTimeout(() => (this.showToast = false), 3000);
+    setTimeout(() => (this.showToast = false), 4000);
   }
 
   /**
@@ -203,10 +203,12 @@ export default class CalendarPage {
   }
 
   onAppointmentSave(appointment: Appointment) {
+    console.log('appointment to save', appointment)
+    const messageSave = `Cita ${appointment.id == '' ? 'guardada' : 'actualizada'} correctamente`
     // Lógica para guardar la cita
     this.calendarService.saveAppointment(appointment);
     this.loadDataForSelectedDate();
-    this.showToastMessage('Cita guardada correctamente');
+    this.showToastMessage(messageSave);
     this.closeModal();
   }
 
