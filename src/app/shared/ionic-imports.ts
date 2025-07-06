@@ -27,6 +27,9 @@ import {
   IonText,
   IonFab,
   IonFabButton,
+  IonAccordion,
+  IonAccordionGroup,
+  IonNote,
 } from '@ionic/angular/standalone';
 
 export const IONIC_IMPORTS = [
@@ -57,4 +60,7 @@ export const IONIC_IMPORTS = [
   IonText,
   IonFab,
   IonFabButton,
+  IonAccordion,
+  IonAccordionGroup,
+  IonNote,
 ];
