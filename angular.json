@@ -38,6 +38,11 @@
                 "glob": "manifest.webmanifest",
                 "input": "public",
                 "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "public/icons",
+                "output": "assets/icons"
               }
             ],
             "styles": [
