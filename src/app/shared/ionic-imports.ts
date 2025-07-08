@@ -30,6 +30,7 @@ import {
   IonAccordion,
   IonAccordionGroup,
   IonNote,
+  IonFooter,
 } from '@ionic/angular/standalone';
 
 export const IONIC_IMPORTS = [
@@ -63,4 +64,5 @@ export const IONIC_IMPORTS = [
   IonAccordion,
   IonAccordionGroup,
   IonNote,
+  IonFooter,
 ];
