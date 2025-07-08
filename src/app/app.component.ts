@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { IonApp, IonRouterOutlet, IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonMenuToggle, IonItem, IonFooter } from '@ionic/angular/standalone';
+import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { VERSION } from '../environments/version';
+import { SharedIonicModule } from './shared/shared-ionic.module';
 
 @Component({
   selector: 'app-root',
@@ -9,19 +10,11 @@ import { VERSION } from '../environments/version';
   imports: [
     IonApp,
     IonRouterOutlet,
-    IonMenu,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonList,
-    IonMenuToggle,
-    IonItem,
     RouterModule,
-    IonFooter,
+    SharedIonicModule
   ],
 })
 export class AppComponent {
   version = VERSION;
-  constructor() {}
+  constructor() { }
 }
