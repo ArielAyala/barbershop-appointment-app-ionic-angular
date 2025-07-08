@@ -4,7 +4,7 @@ import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle } from '@ion
 @Component({
   selector: 'app-header',
   template: `
-    <ion-header>
+    <ion-header id="header">
       <ion-toolbar>
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
