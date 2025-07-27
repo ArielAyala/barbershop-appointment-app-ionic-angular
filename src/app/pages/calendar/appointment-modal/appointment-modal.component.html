@@ -6,8 +6,8 @@
           {{ selectedDate | date:'mediumDate' }} - {{ selectedTime }}
         </ion-title>
         <ion-buttons slot="end" style="display: flex; align-items: center;">
-          <ion-button (click)="closeModal()">
-            <ion-icon name="close-circle-outline"></ion-icon>
+          <ion-button size="large" color="danger" (click)="closeModal()">
+            <ion-icon slot="icon-only" size="large" name="close-circle-sharp"></ion-icon>
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
@@ -16,16 +16,16 @@
     <ion-content class="ion-padding">
       <form (ngSubmit)="saveAppointment()">
         <ion-item>
-          <ion-input label="Nombre del cliente" label-placement="floating" [(ngModel)]="clientName" name="clientName"></ion-input>
+          <ion-input label="Nombre del cliente" label-placement="stacked" [(ngModel)]="clientName" name="clientName"></ion-input>
         </ion-item>
         <ion-item>
           <ion-checkbox [(ngModel)]="paid" name="paid">Ya pagó</ion-checkbox>
         </ion-item>
         <ion-item>
-          <ion-input label="Monto" label-placement="floating" [(ngModel)]="amountStr" name="amount"></ion-input>
+          <ion-input label="Monto" label-placement="stacked" [(ngModel)]="amountStr" name="amount"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-textarea label="Observaciones" labelPlacement="floating" [(ngModel)]="notes" name="notes"></ion-textarea>
+          <ion-textarea label="Observaciones" labelPlacement="stacked" [(ngModel)]="notes" name="notes"></ion-textarea>
         </ion-item>
 
         <div class="buttons-container">
