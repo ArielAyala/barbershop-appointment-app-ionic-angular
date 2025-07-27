@@ -4,7 +4,7 @@ import { CommonModule, registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { closeCircleOutline, saveOutline, shareSocialOutline, trashOutline } from 'ionicons/icons';
+import { closeCircle, closeCircleOutline, closeCircleSharp, saveOutline, shareSocialOutline, trashOutline } from 'ionicons/icons';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { CalendarService } from 'src/app/services/calendar.service';
 import { SharedService } from 'src/app/services/shared.service';
@@ -52,7 +52,7 @@ export default class CalendarPage {
     private readonly calendarService: CalendarService,
     private readonly sharedService: SharedService
   ) {
-    addIcons({ closeCircleOutline, saveOutline, trashOutline, shareSocialOutline });
+    addIcons({ closeCircleOutline, closeCircle, closeCircleSharp, saveOutline, trashOutline, shareSocialOutline });
   }
 
   ionViewWillEnter(): void {
