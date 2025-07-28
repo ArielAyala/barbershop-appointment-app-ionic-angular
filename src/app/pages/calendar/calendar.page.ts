@@ -98,18 +98,6 @@ export default class CalendarPage {
 
     // Clean pastAppointments
     this.pastAppointments = [];
-
-    // if (this.isPastDate()) {
-    //   this.pastAppointments = this.calendarService.getAppointmentsForDate(this.selectedDate);
-    //   this.availableTimes = [];
-    // } else {
-    //   this.availableTimes = this.calendarService.getTimeSlotsForDate(this.selectedDate);
-    //   console.log('availableTimes', this.availableTimes)
-    //   this.pastAppointments = [];
-    // }
-    //this.appointments = this.calendarService.getAppointments();
-    //this.selectedDayAppointments = this.calendarService.getAppointmentsForDate(this.selectedDate);
-
   }
 
   /**
