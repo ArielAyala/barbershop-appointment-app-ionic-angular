@@ -39,18 +39,28 @@ export class CalendarService {
     const today = DateUtils.getCurrentDate();
 
     // Si la fecha seleccionada es hoy o futura
+    // if (dateFilter >= today) {
+    //   if (timeslotsByDate[dateFilter]) {
+    //     return timeslotsByDate[dateFilter];
+    //   } else {
+    //     // Inicializar con la plantilla por defecto y guardar
+    //     const defaultSlots = this.getDefaultTimeSlots();
+    //     timeslotsByDate[dateFilter] = defaultSlots;
+    //     localStorage.setItem(STORAGE_KEYS.TIME_SLOTS, JSON.stringify(timeslotsByDate));
+    //     return this.defaultTimeSlots;
+    //   }
+    // } else {
+    //   // Para fechas pasadas, retornamos un arreglo vacío
+    //   return [];
+    // }
+
     if (dateFilter >= today) {
-      if (timeslotsByDate[dateFilter]) {
-        return timeslotsByDate[dateFilter];
-      } else {
-        // Inicializar con la plantilla por defecto y guardar
-        const defaultSlots = this.getDefaultTimeSlots();
-        timeslotsByDate[dateFilter] = defaultSlots;
-        localStorage.setItem(STORAGE_KEYS.TIME_SLOTS, JSON.stringify(timeslotsByDate));
-        return this.defaultTimeSlots;
-      }
+      // Si ya existe, devuélvelo; si no, devuelve el array por defecto
+      return timeslotsByDate[dateFilter] 
+        ? timeslotsByDate[dateFilter] 
+        : [...this.defaultTimeSlots];  // devolvemos una copia
     } else {
-      // Para fechas pasadas, retornamos un arreglo vacío
+      // Para fechas pasadas, retornamos vacíos
       return [];
     }
   }
